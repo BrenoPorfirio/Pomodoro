@@ -29,4 +29,17 @@ export const FormContainer = styled.main `
     flex-wrap: wrap;
 `;
 
-export const CounterdownContainer = styled.main ``;
+export const CounterdownContainer = styled.main `
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10rem;
+    line-height: 8rem;
+    color: ${(props) => props.theme['gray-100']};
+    display: flex;
+    gap: 1rem;
+
+    span {
+        background: ${(props) => props.theme['gray-700']};
+        padding: 2rem 1rem;
+        border-radius: 8px;
+    }
+`;
