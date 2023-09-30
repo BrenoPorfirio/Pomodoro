@@ -8,7 +8,6 @@ export function Header () {
     return (
         <HeaderContainer>
             <img src={LogoPomodoro} />
-            <span>Logo</span>
             <nav>
                 <NavLink to="/" title="Timer">
                     <Timer size={24}/>
