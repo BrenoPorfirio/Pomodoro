@@ -1,6 +1,6 @@
 import { Play } from "phosphor-react";
 
-import { HomeContainer, FormContainer, CounterdownContainer } from "./styles";
+import { HomeContainer, FormContainer, CounterdownContainer, Separator } from "./styles";
 
 export function Home() {
     return(
@@ -19,7 +19,7 @@ export function Home() {
             <CounterdownContainer>
                 <span>0</span>
                 <span>0</span>
-                <span>:</span>
+                <Separator>:</Separator>
                 <span>0</span>
                 <span>0</span>
             </CounterdownContainer>
