@@ -23,7 +23,7 @@ export function Home() {
                 <span>0</span>
                 <span>0</span>
             </CounterdownContainer>
-            <StartCounterdownButton type="submit">
+            <StartCounterdownButton disabled type="submit">
                 <Play size={24}/>
                 Começar
             </StartCounterdownButton>
