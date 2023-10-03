@@ -28,9 +28,20 @@ export const FormContainer = styled.main `
     flex-wrap: wrap;
 `;
 
-export const TaskInput = styled.input ``
+const BaseInput = styled.input `
+    background: transparent;
+    height: 2.5rem;
+    border: 0;
+    border-bottom: 2px solid ${(props => props.theme['gray-500'])};
+    font-weight: bold;
+    font-size: 1.125rem;
+    padding: 0 0.5rem;
+    color: ${(props) => props.theme['gray-100']};
+`
 
-export const MinutesAmountInput = styled.input ``
+export const TaskInput = styled(BaseInput) ``
+
+export const MinutesAmountInput = styled(BaseInput) ``
 
 export const CounterdownContainer = styled.main `
     font-family: 'Roboto Mono', monospace;
