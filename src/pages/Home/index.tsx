@@ -1,11 +1,18 @@
 import { Play } from "phosphor-react";
+import { useForm } from "react-hook-form";
 
-import { HomeContainer, FormContainer, CounterdownContainer, Separator, StartCounterdownButton, TaskInput, MinutesAmountInput } from "./styles";
-import { useState } from "react";
+import {
+    HomeContainer,
+    FormContainer,
+    CounterdownContainer, 
+    Separator, 
+    StartCounterdownButton, 
+    TaskInput, 
+    MinutesAmountInput
+    } from "./styles";
+
 
 export function Home() {
-    const [task, setTask] = useState('');
-
     return(
     <HomeContainer>
         <form action="">
@@ -15,8 +22,6 @@ export function Home() {
                 id="task"
                 list="task-suggestions"
                 placeholder="Dê um nome para seu projeto"
-                onChange={(e) => setTask(e.target.value)}
-                value={task}
                 />
 
                 <datalist id="task-suggestions">
@@ -46,7 +51,7 @@ export function Home() {
                 <span>0</span>
                 <span>0</span>
             </CounterdownContainer>
-            <StartCounterdownButton disabled={ !task } type="submit">
+            <StartCounterdownButton disabled type="submit">
                 <Play size={24}/>
                 Começar
             </StartCounterdownButton>
