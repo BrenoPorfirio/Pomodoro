@@ -37,6 +37,7 @@ interface Cycle {
 export function Home() {
     const [cycles, setCycles] = useState<Cycle[]>([])
     const [activeCycleId, setActiveCycleId] = useState<string | null > (null)
+    const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
     const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
         resolver: zodResolver(newCycleFormValidationSchema),
