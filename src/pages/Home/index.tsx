@@ -109,11 +109,11 @@ export function Home() {
             </FormContainer>
 
             <CounterdownContainer>
-                <span>0</span>
-                <span>0</span>
+                <span>{minutes[0]}</span>
+                <span>{minutes[1]}</span>
                 <Separator>:</Separator>
-                <span>0</span>
-                <span>0</span>
+                <span>{seconds[0]}</span>
+                <span>{seconds[1]}</span>
             </CounterdownContainer>
             <StartCounterdownButton  disabled={isSubmitDisabled} type="submit">
                 <Play size={24}/>
