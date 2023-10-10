@@ -4,9 +4,15 @@ import { differenceInMilliseconds } from 'date-fns'
 
 interface CountdownProps {
   activeCycle: any
+  setCycles: any
+  activeCycleId: any
 }
 
-export function Countdown({ activeCycle }: CountdownProps) {
+export function Countdown({
+  activeCycle,
+  setCycles,
+  activeCycleId,
+}: CountdownProps) {
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
