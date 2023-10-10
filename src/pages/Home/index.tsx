@@ -25,6 +25,7 @@ interface Cycle {
 
 interface CyclesContextType {
   activeCycle: Cycle | undefined
+  activeCycleId: string | null
 }
 
 export const CyclesContext = createContext({} as CyclesContextType)
@@ -63,27 +64,13 @@ export function Home() {
     setActiveCycleId(null)
   }
 
-  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
-
-  const minutesAmount = Math.floor(currentSeconds / 60)
-  const secondsAmount = currentSeconds % 60
-
-  const minutes = String(minutesAmount).padStart(2, '0')
-  const seconds = String(secondsAmount).padStart(2, '0')
-
-  useEffect(() => {
-    if (activeCycle) {
-      document.title = `${minutes}:${seconds}`
-    }
-  }, [minutes, seconds, activeCycle])
-
   const task = watch('task')
   const isSubmitDisabled = !task
 
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
-        <CyclesContext.Provider value={{ activeCycle }}>
+        <CyclesContext.Provider value={{ activeCycle, activeCycleId }}>
           <NewCycleForm />
           <Countdown />
         </CyclesContext.Provider>
