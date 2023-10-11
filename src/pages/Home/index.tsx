@@ -25,8 +25,9 @@ interface Cycle {
 interface CyclesContextType {
   activeCycle: Cycle | undefined
   activeCycleId: string | null
-  markCurrentCycleAsFinished: () => void
   amountSecondsPassed: number
+  markCurrentCycleAsFinished: () => void
+  setSecondsPassed: (seconds: number) => void
 }
 
 export const CyclesContext = createContext({} as CyclesContextType)
@@ -57,6 +58,10 @@ export function Home() {
   const { handleSubmit, watch, reset } = newCycleForm
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  function setSecondsPassed(seconds: number) {
+    setAmountSecondsPassed(seconds)
+  }
 
   function markCurrentCycleAsFinished() {
     setCycles((state) =>
@@ -110,6 +115,7 @@ export function Home() {
             activeCycleId,
             markCurrentCycleAsFinished,
             amountSecondsPassed,
+            setSecondsPassed,
           }}
         >
           <FormProvider {...newCycleForm}>
