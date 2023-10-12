@@ -31,7 +31,6 @@ export function History() {
                       locale: ptBR,
                     })}
                   </td>
-                  <td>Status</td>
                   <td>
                     {cycle.finishedDate && (
                       <Status statusColor="green">Concluído</Status>
