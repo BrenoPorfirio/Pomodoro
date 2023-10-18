@@ -16,7 +16,7 @@ Programa exclusivo promovido pela Rocketseat para ensino de tecnologias WEB.
 
 <br>
 <p align="center">
-  <img alt="SocialFeed" src="https://github.com/BrenoPorfirio/SocialFeed/assets/112186428/4fe282d0-8f75-46d4-bc27-b4504786c45d" width="100%">
+  <img alt="PomodoroTimer" src="https://github.com/BrenoPorfirio/Pomodoro/assets/112186428/13ce71fb-7198-4a89-8e63-5156bff2c933" width="100%">
 </p>
 
 ## 🚀 Tecnologias
