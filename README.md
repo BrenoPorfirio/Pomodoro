@@ -7,11 +7,7 @@ Programa exclusivo promovido pela Rocketseat para ensino de tecnologias WEB.
 <p align="center">
   <a href="#-tecnologias">Tecnologias</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-projeto">Projeto</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#memo-licença">Licença</a>
-</p>
-
-<p align="center">
-  <img alt="License" src="https://img.shields.io/static/v1?label=license&message=MIT&color=49AA26&labelColor=000000">
+  <a href="#memo-execução">Execução</a>
 </p>
 
 <br>
@@ -32,8 +28,30 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 O Pomodoro é um programa que se assemelha a uma página que replica as funções de um pomodoro.
 
-## :memo: Licença
+## :memo: Execução
 
-Esse projeto está sob a licença MIT.
+Siga abaixo os seguinte passos para execução do código:
 
----
+1. Clone o repositório utilizando:
+
+```bash
+  git clone https://github.com/BrenoPorfirio/Pomodoro.git
+```
+
+2. Agora, vá para o diretório na sua IDE utilizando:
+
+```bash
+  cd Pomodoro
+```
+
+3. Instale todas as dependências necessárias utilizando:
+
+```bash
+  npm install
+```
+
+4. Agora, basta executar o comando para rodar o projeto:
+
+```bash
+  npm run dev
+```
