@@ -40,7 +40,7 @@ interface GroupedCycle {
 type FilterType = "all" | "finished" | "interrupted";
 
 export function History() {
-  const { cycles, createCycleFromHistory, deleteCycles, deleteSingleCycle } = useContext(CyclesContext);
+  const { cycles, reactivateCycle, deleteCycles, deleteSingleCycle } = useContext(CyclesContext);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
   const [filterType, setFilterType] = useState<FilterType>("all");
@@ -68,10 +68,10 @@ export function History() {
 
   const filteredGroups = Array.from(groupedByTask.values()).filter((group) => {
     if (filterType === "finished") {
-      return group.cycles.every((c) => c.finishedDate);
+      return group.cycles.some((c) => c.finishedDate);
     }
     if (filterType === "interrupted") {
-      return group.cycles.every((c) => c.interruptedDate);
+      return group.cycles.some((c) => c.interruptedDate);
     }
     return true;
   });
@@ -103,8 +103,8 @@ export function History() {
     setExpandedGroups(newExpanded);
   };
 
-  const handleRunAgain = (task: string, minutesAmount: number) => {
-    createCycleFromHistory({ task, minutesAmount });
+  const handleRunAgain = (cycleId: string) => {
+    reactivateCycle(cycleId);
     navigate("/");
   };
 
@@ -178,6 +178,10 @@ export function History() {
               const totalMinutes = group.cycles.reduce((sum, cycle) => sum + cycle.minutesAmount, 0);
               const finishedCount = group.cycles.filter(c => c.finishedDate).length;
               const interruptedCount = group.cycles.filter(c => c.interruptedDate).length;
+              
+              // Calculate filtered counts based on current filter
+              const displayFinishedCount = filterType === "interrupted" ? 0 : finishedCount;
+              const displayInterruptedCount = filterType === "finished" ? 0 : interruptedCount;
               const isSingle = cycleCount === 1;
               const singleCycle = group.cycles[0];
 
@@ -220,7 +224,7 @@ export function History() {
                         {!finishedDate && (
                           <ActionButton
                             onClick={() =>
-                              handleRunAgain(group.task, singleCycle.minutesAmount)
+                              handleRunAgain(singleCycle.id)
                             }
                             title="Rodar novamente"
                           >
@@ -257,7 +261,12 @@ export function History() {
                     <td style={{ textAlign: 'center' }}>
                       <SummaryInfo>
                         <div>Total: {totalMinutes}min</div>
-                        <div>✓ {finishedCount} ✗ {interruptedCount}</div>
+                        <div>
+                          {filterType === "interrupted" 
+                            ? `✗ ${displayInterruptedCount}` 
+                            : `✓ ${displayFinishedCount} ✗ ${displayInterruptedCount}`
+                          }
+                        </div>
                       </SummaryInfo>
                     </td>
                     <td style={{ textAlign: 'center' }}>
@@ -268,7 +277,12 @@ export function History() {
                     </td>
                     <td style={{ textAlign: 'center' }}>
                       <SummaryInfo>
-                        <div>✓ {finishedCount} ✗ {interruptedCount}</div>
+                        <div>
+                          {filterType === "interrupted" 
+                            ? `✗ ${displayInterruptedCount}` 
+                            : `✓ ${displayFinishedCount} ✗ ${displayInterruptedCount}`
+                          }
+                        </div>
                       </SummaryInfo>
                     </td>
                     <GroupedActionCell>
@@ -280,7 +294,14 @@ export function History() {
                       </DeleteButton>
                     </GroupedActionCell>
                   </tr>
-                  {isExpanded && group.cycles.map((cycle) => {
+                  {isExpanded && group.cycles
+                    .filter(cycle => {
+                      if (filterType === "interrupted") {
+                        return !!cycle.interruptedDate;
+                      }
+                      return true;
+                    })
+                    .map((cycle) => {
                     const finishedDate = cycle.finishedDate
                       ? cycle.finishedDate instanceof Date
                         ? cycle.finishedDate
@@ -332,7 +353,7 @@ export function History() {
                             {!finishedDate && (
                               <ActionButton
                                 onClick={() =>
-                                  handleRunAgain(group.task, cycle.minutesAmount)
+                                  handleRunAgain(cycle.id)
                                 }
                                 title="Rodar novamente"
                               >

@@ -6,6 +6,8 @@ export enum ActionTypes {
   MARK_CURRENT_CYCLE_AS_FINISHED = 'MARK_CURRENT_CYCLE_AS_FINISHED',
   DELETE_CYCLES = 'DELETE_CYCLES',
   DELETE_SINGLE_CYCLE = 'DELETE_SINGLE_CYCLE',
+  UPDATE_CYCLE = 'UPDATE_CYCLE',
+  SET_ACTIVE_CYCLE = 'SET_ACTIVE_CYCLE',
 }
 
 export function addNewCycleAction(newCycle: Cycle) {
@@ -34,6 +36,25 @@ export function deleteCyclesAction(taskName: string) {
     type: ActionTypes.DELETE_CYCLES,
     payload: {
       taskName,
+    },
+  }
+}
+
+export function updateCycleAction(cycleId: string, cycle: Cycle) {
+  return {
+    type: ActionTypes.UPDATE_CYCLE,
+    payload: {
+      cycleId,
+      cycle,
+    },
+  }
+}
+
+export function setActiveCycleAction(cycleId: string) {
+  return {
+    type: ActionTypes.SET_ACTIVE_CYCLE,
+    payload: {
+      cycleId,
     },
   }
 }

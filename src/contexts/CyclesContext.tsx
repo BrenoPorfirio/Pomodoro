@@ -28,7 +28,7 @@ interface CyclesContextType {
   setSecondsPassed: (seconds: number) => void;
   createNewCycle: (data: CreateCycleData) => void;
   interruptCurrentCycle: () => void;
-  createCycleFromHistory: (data: CreateCycleData & { elapsedSeconds?: number }) => void;
+  reactivateCycle: (cycleId: string) => void;
   deleteCycles: (taskName: string) => void;
   deleteSingleCycle: (cycleId: string) => void;
 }
@@ -57,14 +57,12 @@ export function CyclesContextProvider({
         if (storedStateAsJSON) {
           const parsedState = JSON.parse(storedStateAsJSON);
           
-          // Validate the structure of the stored data
           if (parsedState && 
               typeof parsedState === 'object' && 
               Array.isArray(parsedState.cycles) &&
               (parsedState.activeCycleId === null || typeof parsedState.activeCycleId === 'string')) {
             return parsedState;
           } else {
-            // Data is corrupted, reset it
             console.warn('Corrupted localStorage data found, resetting to initial state');
             localStorage.removeItem("@ignite-timer:cycles-state-1.0.0");
             return initialState;
@@ -74,7 +72,6 @@ export function CyclesContextProvider({
         return initialState;
       } catch (error) {
         console.error('Error reading localStorage data:', error);
-        // If there's any error parsing, reset the data
         localStorage.removeItem("@ignite-timer:cycles-state-1.0.0");
         return initialState;
       }
@@ -98,7 +95,6 @@ export function CyclesContextProvider({
       localStorage.setItem("@ignite-timer:cycles-state-1.0.0", stateJSON);
     } catch (error) {
       console.error('Error saving to localStorage:', error);
-      // If saving fails, try to clear and reset
       try {
         localStorage.removeItem("@ignite-timer:cycles-state-1.0.0");
       } catch (clearError) {
@@ -133,22 +129,38 @@ export function CyclesContextProvider({
     dispatch(interruptCurrentCycleAction());
   }
 
-  function createCycleFromHistory(data: CreateCycleData & { elapsedSeconds?: number }) {
-    const id = String(new Date().getTime());
-    const newCycle: Cycle = {
-      id,
-      task: data.task,
-      minutesAmount: data.minutesAmount,
-      startDate: new Date(),
-    };
+  function reactivateCycle(cycleId: string) {
+    console.log('reactivateCycle called with:', cycleId);
+    console.log('Current activeCycleId:', activeCycleId);
+    
+    if (activeCycleId) {
+      console.log('Clearing current active cycle:', activeCycleId);
+      dispatch({ type: 'INTERRUPT_CURRENT_CYCLE' });
+    }
 
-    dispatch(addNewCycleAction(newCycle));
+    const cycleToReactivate = cycles.find(cycle => cycle.id === cycleId);
+    
+    if (cycleToReactivate) {
+      setTimeout(() => {
+        const reactivatedCycle: Cycle = {
+          ...cycleToReactivate,
+          id: cycleToReactivate.id,
+          startDate: new Date(),
+          finishedDate: undefined,
+          interruptedDate: undefined,
+        };
 
-    // If elapsed seconds provided, set it
-    if (data.elapsedSeconds) {
-      setAmountSecondsPassed(data.elapsedSeconds);
-    } else {
-      setAmountSecondsPassed(0);
+        console.log('Reactivating cycle:', reactivatedCycle);
+        
+        dispatch({ 
+          type: 'UPDATE_CYCLE', 
+          payload: { cycleId: reactivatedCycle.id, cycle: reactivatedCycle } 
+        });
+        
+        dispatch({ type: 'SET_ACTIVE_CYCLE', payload: { cycleId: reactivatedCycle.id } });
+        
+        setAmountSecondsPassed(0);
+      }, 0);
     }
   }
 
@@ -171,7 +183,7 @@ export function CyclesContextProvider({
         setSecondsPassed,
         createNewCycle,
         interruptCurrentCycle,
-        createCycleFromHistory,
+        reactivateCycle,
         deleteCycles,
         deleteSingleCycle,
       }}

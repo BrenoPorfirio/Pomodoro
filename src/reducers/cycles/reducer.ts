@@ -75,6 +75,21 @@ export function cyclesReducer(state: CyclesStates, action: any) {
         }
       })
     }
+    case ActionTypes.UPDATE_CYCLE: {
+      return produce(state, (draft) => {
+        const cycleIndex = draft.cycles.findIndex(
+          (cycle) => cycle.id === action.payload.cycleId
+        )
+        if (cycleIndex >= 0) {
+          draft.cycles[cycleIndex] = action.payload.cycle
+        }
+      })
+    }
+    case ActionTypes.SET_ACTIVE_CYCLE: {
+      return produce(state, (draft) => {
+        draft.activeCycleId = action.payload.cycleId
+      })
+    }
     default:
       return state
   }
