@@ -6,9 +6,9 @@ import { DefaultLayout } from "./layouts/DefaultLayout";
 export function Router() {
   return (
     <Routes>
-      <Route path="/Pomodoro" element={<DefaultLayout />}>
-        <Route path="/Pomodoro" element={<Home />} />
-        <Route path="/Pomodoro/history" element={<History />} />
+      <Route path="/" element={<DefaultLayout />}>
+        <Route index element={<Home />} />
+        <Route path="/history" element={<History />} />
       </Route>
     </Routes>
   );

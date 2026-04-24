@@ -10,6 +10,7 @@ import {
   addNewCycleAction,
   interruptCurrentCycleAction,
   markCurrentCycleAsFinishedAction,
+  deleteCyclesAction,
 } from "../reducers/cycles/actions";
 import { differenceInSeconds } from "date-fns";
 
@@ -27,6 +28,9 @@ interface CyclesContextType {
   setSecondsPassed: (seconds: number) => void;
   createNewCycle: (data: CreateCycleData) => void;
   interruptCurrentCycle: () => void;
+  createCycleFromHistory: (data: CreateCycleData & { elapsedSeconds?: number }) => void;
+  deleteCycles: (taskName: string) => void;
+  deleteSingleCycle: (cycleId: string) => void;
 }
 
 export const CyclesContext = createContext({} as CyclesContextType);
@@ -45,15 +49,35 @@ export function CyclesContextProvider({
       activeCycleId: null,
     },
     (initialState) => {
-      const storedStateAsJSON = localStorage.getItem(
-        "@ignite-timer:cycles-state-1.0.0",
-      );
+      try {
+        const storedStateAsJSON = localStorage.getItem(
+          "@ignite-timer:cycles-state-1.0.0",
+        );
 
-      if (storedStateAsJSON) {
-        return JSON.parse(storedStateAsJSON);
+        if (storedStateAsJSON) {
+          const parsedState = JSON.parse(storedStateAsJSON);
+          
+          // Validate the structure of the stored data
+          if (parsedState && 
+              typeof parsedState === 'object' && 
+              Array.isArray(parsedState.cycles) &&
+              (parsedState.activeCycleId === null || typeof parsedState.activeCycleId === 'string')) {
+            return parsedState;
+          } else {
+            // Data is corrupted, reset it
+            console.warn('Corrupted localStorage data found, resetting to initial state');
+            localStorage.removeItem("@ignite-timer:cycles-state-1.0.0");
+            return initialState;
+          }
+        }
+
+        return initialState;
+      } catch (error) {
+        console.error('Error reading localStorage data:', error);
+        // If there's any error parsing, reset the data
+        localStorage.removeItem("@ignite-timer:cycles-state-1.0.0");
+        return initialState;
       }
-
-      return initialState;
     },
   );
 
@@ -69,8 +93,18 @@ export function CyclesContextProvider({
   });
 
   useEffect(() => {
-    const stateJSON = JSON.stringify(cyclesState);
-    localStorage.setItem("@ignite-timer:cycles-state-1.0.0", stateJSON);
+    try {
+      const stateJSON = JSON.stringify(cyclesState);
+      localStorage.setItem("@ignite-timer:cycles-state-1.0.0", stateJSON);
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+      // If saving fails, try to clear and reset
+      try {
+        localStorage.removeItem("@ignite-timer:cycles-state-1.0.0");
+      } catch (clearError) {
+        console.error('Error clearing localStorage:', clearError);
+      }
+    }
   }, [cyclesState]);
 
   function setSecondsPassed(seconds: number) {
@@ -99,6 +133,33 @@ export function CyclesContextProvider({
     dispatch(interruptCurrentCycleAction());
   }
 
+  function createCycleFromHistory(data: CreateCycleData & { elapsedSeconds?: number }) {
+    const id = String(new Date().getTime());
+    const newCycle: Cycle = {
+      id,
+      task: data.task,
+      minutesAmount: data.minutesAmount,
+      startDate: new Date(),
+    };
+
+    dispatch(addNewCycleAction(newCycle));
+
+    // If elapsed seconds provided, set it
+    if (data.elapsedSeconds) {
+      setAmountSecondsPassed(data.elapsedSeconds);
+    } else {
+      setAmountSecondsPassed(0);
+    }
+  }
+
+  function deleteCycles(taskName: string) {
+    dispatch(deleteCyclesAction(taskName));
+  }
+
+  function deleteSingleCycle(cycleId: string) {
+    dispatch({ type: 'DELETE_SINGLE_CYCLE', payload: { cycleId } });
+  }
+
   return (
     <CyclesContext.Provider
       value={{
@@ -110,6 +171,9 @@ export function CyclesContextProvider({
         setSecondsPassed,
         createNewCycle,
         interruptCurrentCycle,
+        createCycleFromHistory,
+        deleteCycles,
+        deleteSingleCycle,
       }}
     >
       {children}

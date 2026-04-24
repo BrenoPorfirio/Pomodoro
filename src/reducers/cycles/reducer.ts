@@ -51,6 +51,30 @@ export function cyclesReducer(state: CyclesStates, action: any) {
         draft.cycles[currentCycleIndex].finishedDate = new Date()
       })
     }
+    case ActionTypes.DELETE_CYCLES: {
+      return produce(state, (draft) => {
+        draft.cycles = draft.cycles.filter(
+          (cycle) => cycle.task !== action.payload.taskName
+        )
+        if (
+          draft.activeCycleId &&
+          draft.cycles.find((cycle) => cycle.id === draft.activeCycleId)?.task ===
+            action.payload.taskName
+        ) {
+          draft.activeCycleId = null
+        }
+      })
+    }
+    case ActionTypes.DELETE_SINGLE_CYCLE: {
+      return produce(state, (draft) => {
+        draft.cycles = draft.cycles.filter(
+          (cycle) => cycle.id !== action.payload.cycleId
+        )
+        if (draft.activeCycleId === action.payload.cycleId) {
+          draft.activeCycleId = null
+        }
+      })
+    }
     default:
       return state
   }

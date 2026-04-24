@@ -12,11 +12,11 @@ export const GlobalStyle = createGlobalStyle`
         scroll-behavior: smooth;
 
         @media (max-width: 768px) {
-            font-size: 14px;
+            font-size: 12px;
         }
 
         @media (max-width: 480px) {
-            font-size: 13px;
+            font-size: 12px;
         }
     }
 
