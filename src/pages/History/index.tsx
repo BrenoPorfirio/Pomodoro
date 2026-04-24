@@ -1,11 +1,11 @@
-import { useContext } from 'react'
-import { formatDistanceToNow } from 'date-fns'
-import ptBR from 'date-fns/locale/pt-BR'
-import { HistoryContainer, HistoryList, Status } from './styles'
-import { CyclesContext } from '../../contexts/CyclesContext'
+import { useContext } from "react";
+import { formatDistanceToNow } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
+import { HistoryContainer, HistoryList, Status } from "./styles";
+import { CyclesContext } from "../../contexts/CyclesContext";
 
 export function History() {
-  const { cycles } = useContext(CyclesContext)
+  const { cycles } = useContext(CyclesContext);
   return (
     <HistoryContainer>
       <h1>Meu histórico</h1>
@@ -43,11 +43,11 @@ export function History() {
                     )}
                   </td>
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
       </HistoryList>
     </HistoryContainer>
-  )
+  );
 }
